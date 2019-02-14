@@ -94,7 +94,24 @@ func watch(pattern string, updates chan int, stop chan bool, done chan bool) {
 		}
 	}()
 
-	paths, _ := filepath.Glob(pattern)
+	var paths []string
+	filepath.Walk(pattern, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			return nil
+		}
+		// ignore hidden dirs
+		if len(path) > 1 &&
+			strings.HasPrefix(filepath.Base(path), ".") &&
+			!strings.HasPrefix(filepath.Base(path), "..") {
+			return filepath.SkipDir
+		}
+		paths = append(paths, path)
+		return nil
+	})
+
 	for _, path := range paths {
 		log.Printf("watching %s", path)
 		err = watcher.Add(path)

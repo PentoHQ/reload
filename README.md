@@ -18,5 +18,5 @@ A project to re-run any command based on changes in files on a glob pattern
 flag   | type   | description
 -------|--------|-----------------------
 -debug | bool   | enable verbose output
--w     | string | glob pattern to watch
+-w     | string | root of tree to watch
  
